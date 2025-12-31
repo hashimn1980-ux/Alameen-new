@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { ArrowRight, Building, Wallet, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight, Building, Wallet, Zap, Award, CheckCircle2, Globe2 } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const KnotVisual = () => (
   <svg viewBox="0 0 200 200" className="w-full h-full opacity-60">
@@ -63,6 +63,28 @@ const GridVisual = () => (
   </svg>
 );
 
+const CredentialsBar = () => (
+  <motion.div 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 1.5, duration: 1 }}
+    className="absolute bottom-12 left-6 md:left-12 right-6 flex flex-wrap gap-8 items-center border-t border-white/10 pt-6"
+  >
+    <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+      <Award size={16} className="text-[#C5A059]" />
+      <span className="text-[10px] uppercase tracking-widest font-bold">DLD Regulatory Partner</span>
+    </div>
+    <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+      <CheckCircle2 size={16} className="text-[#C5A059]" />
+      <span className="text-[10px] uppercase tracking-widest font-bold">Emaar Top Tier Broker</span>
+    </div>
+    <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+      <Globe2 size={16} className="text-[#C5A059]" />
+      <span className="text-[10px] uppercase tracking-widest font-bold">Excellence Award 2024</span>
+    </div>
+  </motion.div>
+);
+
 const ProjectCard = ({ id, title, stat, subtitle }: { id: string, title: string, stat: string, subtitle: string }) => (
   <Link to={`/work/${id}`} className="group relative block bg-[#0A192F]/30 border border-white/5 p-8 overflow-hidden hover:border-[#C5A059] transition-colors duration-500">
     <div className="absolute inset-0 bg-[#C5A059]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -77,10 +99,40 @@ const ProjectCard = ({ id, title, stat, subtitle }: { id: string, title: string,
 
 const Home: React.FC = () => {
   const containerRef = useRef(null);
+  const location = useLocation();
+  const [heroText, setHeroText] = useState({
+    headline: "The real estate market is a",
+    highlight: "half-trillion dirham race.",
+    ticker: "Why are you running it with your feet in the mud?"
+  });
 
-  // Text Animation
-  const sentence = "Why are you running it with your feet in the mud?";
-  const letters = sentence.split("");
+  // Personalization Logic based on UTM Source
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const source = params.get('utm_source');
+
+    if (source === 'enterprise') {
+      setHeroText({
+        headline: "Operational inefficiency is",
+        highlight: "costing you millions.",
+        ticker: "Scale your portfolio without scaling your headcount."
+      });
+    } else if (source === 'capital') {
+      setHeroText({
+        headline: "Deploy institutional capital with",
+        highlight: "surgical precision.",
+        ticker: "De-risk your acquisition pipeline today."
+      });
+    } else if (source === 'developer') {
+      setHeroText({
+        headline: "Liquidity events shouldn't take",
+        highlight: "eighteen months.",
+        ticker: "From concept to cash flow in 90 days."
+      });
+    }
+  }, [location]);
+
+  const letters = heroText.ticker.split("");
 
   return (
     <div className="w-full bg-[#050505] text-white overflow-hidden">
@@ -103,8 +155,8 @@ const Home: React.FC = () => {
 
         <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-8 tracking-tight">
-            The real estate market is a <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">half-trillion dirham race.</span>
+            {heroText.headline} <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">{heroText.highlight}</span>
           </h1>
           
           <div className="text-xl md:text-2xl font-light text-[#ef4444] font-mono tracking-tight overflow-hidden whitespace-nowrap">
@@ -113,7 +165,7 @@ const Home: React.FC = () => {
                 key={index}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.05 + 1 }}
+                transition={{ delay: index * 0.03 + 1 }}
               >
                 {char}
               </motion.span>
@@ -125,6 +177,8 @@ const Home: React.FC = () => {
             />
           </div>
         </motion.div>
+
+        <CredentialsBar />
       </section>
 
       {/* SCROLL 1 - CONFLICT */}
