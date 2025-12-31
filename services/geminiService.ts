@@ -1,13 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateDesignAdvice = async (prompt: string): Promise<string> => {
-  if (!apiKey) {
-    return "API Key is missing. Please check your environment configuration.";
-  }
-
   try {
     // Using gemini-3-pro-preview as requested for complex reasoning
     // Setting thinkingBudget to max (32768) as per requirements for "Think more when needed"
